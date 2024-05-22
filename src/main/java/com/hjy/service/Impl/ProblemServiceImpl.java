@@ -36,7 +36,7 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
-    public List<Problem> search(String dif, List<Label> labels, String content) {
+    public List<Problem> search(String dif, List<String> labels, String content) {
         List<Problem> problems = problemMapper.search(dif, content);
         //找到该题目对应所有算法标签
         for (Problem problem : problems) {
@@ -47,13 +47,15 @@ public class ProblemServiceImpl implements ProblemService {
             Iterator<Problem> iterator = problems.iterator();
             while(iterator.hasNext()) {
                 Problem problem = iterator.next();
+                boolean flag = false;
                 for (Label label : problem.getLabels()) {
-                    if (!labels.contains(label)) {
-                        // 该题目与算法标签不符
-                        iterator.remove();
+                    if (labels.contains(label.getLName())) {
+                        flag = true;
                         break;
                     }
                 }
+                if(!flag)
+                    iterator.remove();
             }
         }
 //        if (labels != null) {

@@ -17,5 +17,5 @@ import java.util.List;
 public interface ProblemService {
     List<Problem> findAll();
 
-    List<Problem> search(String dif, List<Label> labels, String content);
+    List<Problem> search(String dif, List<String> labels, String content);
 }
