@@ -58,17 +58,12 @@ public class ProblemServiceImpl implements ProblemService {
                     iterator.remove();
             }
         }
-//        if (labels != null) {
-//            for (Problem problem : problems) {
-//                for (Label label : problem.getLabels()) {
-//                    if (!labels.contains(label)) {
-//                        //该题目与算法标签不符
-//                        problems.remove(problem);
-//                    }
-//                }
-//            }
-//        }
         return problems;
 
+    }
+
+    @Override
+    public Problem findById(Integer pId) {
+        return problemMapper.findById(pId);
     }
 }

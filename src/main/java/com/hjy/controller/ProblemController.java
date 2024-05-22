@@ -30,4 +30,10 @@ public class ProblemController {
         problems = problemService.search(search.getDif(), search.getLabels(),search.getContent());
         return Result.success(problems);
     }
+
+    @GetMapping("/findByid")
+    public Result findById(Integer pId){
+        Problem problem = problemService.findById(pId);
+        return Result.success(problem);
+    }
 }

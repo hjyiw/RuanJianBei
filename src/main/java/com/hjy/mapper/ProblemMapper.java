@@ -13,4 +13,6 @@ public interface ProblemMapper {
     List<Label> findLabel(Integer pId);
 
     List<Problem> search(String dif, String content);
+
+    Problem findById(Integer pId);
 }

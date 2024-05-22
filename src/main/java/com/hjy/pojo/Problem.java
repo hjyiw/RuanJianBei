@@ -26,4 +26,8 @@ public class Problem {
     private Integer acNum; //通过数
     private String content; //内容
     private List<Label> labels; //标签
+    private String inDetail; //输入描述
+    private String outDetail; //输出描述
+    private String inTest; //测试输入
+    private String OutTest; //测试输出
 }

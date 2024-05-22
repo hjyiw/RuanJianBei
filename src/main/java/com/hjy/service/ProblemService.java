@@ -18,4 +18,6 @@ public interface ProblemService {
     List<Problem> findAll();
 
     List<Problem> search(String dif, List<String> labels, String content);
+
+    Problem findById(Integer pId);
 }

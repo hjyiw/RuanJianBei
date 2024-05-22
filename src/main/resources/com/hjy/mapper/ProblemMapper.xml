@@ -25,4 +25,9 @@
                   </if>
               </where>
     </select>
+    <select id="findById" resultType="com.hjy.pojo.Problem">
+        select p_name,p.p_id, pro_con, in_detail, out_detail,in_test,out_test
+        from content join problems p on p.p_id = content.p_id
+        where p.p_id = #{pId}
+    </select>
 </mapper>
