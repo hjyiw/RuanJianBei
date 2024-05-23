@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/problem")
 public class ProblemController {
@@ -21,6 +21,9 @@ public class ProblemController {
     public Result findAll(){
         List<Problem> problems;
         problems = problemService.findAll();
+//        for(Problem problem : problems){
+//            System.out.println(problem);
+//        }
         return Result.success(problems);
     }
 
@@ -28,6 +31,9 @@ public class ProblemController {
     public Result search(@RequestBody Search search){
         List<Problem> problems;
         problems = problemService.search(search.getDif(), search.getLabels(),search.getContent());
+        for(Problem problem : problems){
+            System.out.println(problem);
+        }
         return Result.success(problems);
     }
 

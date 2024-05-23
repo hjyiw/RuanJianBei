@@ -20,6 +20,6 @@ import java.util.List;
 @AllArgsConstructor
 public class Search {
     private String dif;
-    private List<String> labels; // 假设Label是一个已有的实体类
+    private List<String> labels;
     private String content;
 }
