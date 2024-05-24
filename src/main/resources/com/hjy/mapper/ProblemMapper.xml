@@ -4,16 +4,16 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hjy.mapper.ProblemMapper">
     <select id="findAll" resultType="com.hjy.pojo.Problem">
-        select * from problems
+        select distinct * from problems
     </select>
     <select id="findLabel" resultType="com.hjy.pojo.Label">
-        select lr.l_id, l.l_name
+        select distinct lr.l_id, l.l_name
         from problems
             left join lp_relation lr on problems.p_id = lr.p_id
             left join label l on l.l_id = lr.l_id where lr.p_id = #{pId}
     </select>
     <select id="search" resultType="com.hjy.pojo.Problem">
-        select p_name,state,lr.p_id, difficulty,ac_num from problems
+        select distinct p_name,state,lr.p_id, difficulty,ac_num from problems
              left join lp_relation lr on problems.p_id = lr.p_id
              left join label l on l.l_id = lr.l_id
               <where>
