@@ -1,7 +1,7 @@
 package com.hjy.service;
 
-import com.hjy.pojo.Label;
 import com.hjy.pojo.Problem;
+import com.hjy.pojo.TestData;
 
 import java.util.List;
 
@@ -20,4 +20,10 @@ public interface ProblemService {
     List<Problem> search(String dif, List<String> labels, String content);
 
     Problem findById(Integer pId);
+
+    List<TestData> findData(Integer pId);
+
+    String question(String question, Integer pId);
+
+    String findContent(Integer pId);
 }

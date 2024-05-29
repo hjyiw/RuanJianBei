@@ -3,11 +3,11 @@ package com.hjy.service.Impl;
 import com.hjy.mapper.ProblemMapper;
 import com.hjy.pojo.Label;
 import com.hjy.pojo.Problem;
+import com.hjy.pojo.TestData;
 import com.hjy.service.ProblemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.invoke.VarHandle;
 import java.util.Iterator;
 import java.util.List;
 
@@ -65,5 +65,28 @@ public class ProblemServiceImpl implements ProblemService {
     @Override
     public Problem findById(Integer pId) {
         return problemMapper.findById(pId);
+    }
+
+    @Override
+    public String findContent(Integer pId){
+        return problemMapper.findContent(pId);
+    }
+    @Override
+    public List<TestData> findData(Integer pId) {
+        return problemMapper.findData(pId);
+    }
+
+    @Override
+    public String question(String question, Integer pId) {
+        String content = findContent(pId);
+        question += "\n这是一段代码，题目是：'"+ content + "'数据集如下：\n";
+        int cnt = 1;
+        List<TestData> datas = findData(pId);
+        for(TestData data : datas){
+            question += "sample" + cnt + ": " + data.toString() + "\n";
+            cnt ++;
+        }
+        question += "解析这段代码，你给出的回复必须是一个json形式的对象，属性有result和sug,如果代码通过所有数据集result就为1否则为0,sug是一个数组存你对代码的建议";
+        return question;
     }
 }

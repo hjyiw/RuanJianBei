@@ -1,6 +1,7 @@
 package com.hjy.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hjy.component.MemoryUserRecordSpace;
 import com.hjy.component.XfXhStreamClient;
@@ -9,16 +10,12 @@ import com.hjy.dto.InteractMsg;
 import com.hjy.dto.MsgDTO;
 import com.hjy.dto.RecordsArray;
 import com.hjy.listener.XfXhWebSocketListener;
-import com.hjy.pojo.Label;
-import com.hjy.pojo.Problem;
-import com.hjy.pojo.Result;
-import com.hjy.pojo.Search;
+import com.hjy.pojo.*;
 import com.hjy.service.ProblemService;
 import jakarta.annotation.Resource;
 import okhttp3.WebSocket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -66,30 +63,36 @@ public class ProblemController {
         return Result.success(problem);
     }
 
+    @GetMapping("/findData")
+    public Result findData(Integer pId){
+        List<TestData> data = problemService.findData(pId);
+        return Result.success(data);
+    }
     // 使用 id 作为唯一用户的标识（区分不同用户）
-    @GetMapping("/sendQuestion")
-    public String question(@RequestParam("id") Long id, @RequestParam("question") String question) throws InterruptedException {
+    @PostMapping("/sendQuestion")
+    public Result question(@RequestParam("id") Long id, @RequestParam("question") String question,@RequestParam("pId") Integer pId) throws InterruptedException {
         if (StrUtil.isBlank(question)) {
-            return "无效问题，请重新输入";
+            return Result.error("无效问题，请重新输入");
         }
-
         // 尝试锁定用户
         if (!memoryUserRecordSpace.tryLock(id)) {
-            return "正在处理上次问题，请稍后再试";
+            return Result.error("正在处理上次问题，请稍后再试");
         }
-
         // 获取连接令牌
         if(!xfXhStreamClient.operateToken(XfXhStreamClient.GET_TOKEN_STATUS)){
             // 释放锁
             memoryUserRecordSpace.unLock(id);
-            return "当前大模型连接数过多，请稍后再试";
+            return Result.error("当前大模型连接数过多，请稍后再试");
         }
 
+        //封装question
+        question = problemService.question(question,pId);
+
+        // 组装上下文内容发送
+//        List<MsgDTO> msgList = memoryUserRecordSpace.getAllInteractMsg(id);
+        List<MsgDTO> msgList = new ArrayList<>();
         MsgDTO msgDTO = MsgDTO.createUserMsg(question);
         XfXhWebSocketListener listener = new XfXhWebSocketListener();
-        // 组装上下文内容发送
-        List<MsgDTO> msgList = memoryUserRecordSpace.getAllInteractMsg(id);
-
         msgList.add(msgDTO);
         WebSocket webSocket = xfXhStreamClient.sendMsg(UUID.randomUUID().toString().substring(0, 10), msgList, listener);
         if (webSocket == null) {
@@ -97,7 +100,7 @@ public class ProblemController {
             xfXhStreamClient.operateToken(XfXhStreamClient.BACK_TOKEN_STATUS);
             // 释放锁
             memoryUserRecordSpace.unLock(id);
-            return "系统内部错误，请联系管理员";
+            return Result.error("系统内部错误，请联系管理员");
         }
         try {
             int count = 0;
@@ -111,12 +114,14 @@ public class ProblemController {
                 count++;
             }
             if (count > maxCount) {
-                return "大模型响应超时，请联系管理员";
+                return Result.error("大模型响应超时，请联系管理员");
             }
             // 将记录添加到 memoryUserRecordSpace
             String answer = listener.getAnswer().toString();
             memoryUserRecordSpace.storeInteractMsg(id, new InteractMsg(MsgDTO.createUserMsg(question), MsgDTO.createAssistantMsg(answer)));
-            return answer;
+            Answer lastAnswer = JSON.parseObject(answer, Answer.class);
+            System.out.println(lastAnswer);
+            return Result.success(lastAnswer);
         } finally {
             // 关闭连接
             webSocket.close(1000, "");

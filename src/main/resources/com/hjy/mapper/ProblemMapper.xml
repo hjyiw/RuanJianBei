@@ -30,4 +30,10 @@
         from content join problems p on p.p_id = content.p_id
         where p.p_id = #{pId}
     </select>
+    <select id="findData" resultType="com.hjy.pojo.TestData">
+        select * from testdata where p_id = #{pId}
+    </select>
+    <select id="findContent" resultType="java.lang.String">
+        select pro_con from content where p_id = #{pId}
+    </select>
 </mapper>
