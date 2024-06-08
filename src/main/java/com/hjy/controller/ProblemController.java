@@ -72,7 +72,10 @@ public class ProblemController {
     @PostMapping("/sendQuestion")
     public Result question(@RequestParam("id") Long id, @RequestParam("question") String question,@RequestParam("pId") Integer pId) throws InterruptedException {
         if (StrUtil.isBlank(question)) {
-            return Result.error("无效问题，请重新输入");
+            List<String> sug = new ArrayList<>();
+            sug.add("代码为空");
+            Answer answer = new Answer(0,sug);
+            return Result.success(answer);
         }
         // 尝试锁定用户
         if (!memoryUserRecordSpace.tryLock(id)) {
