@@ -69,8 +69,9 @@ public class ProblemController {
         return Result.success(data);
     }
     // 使用 id 作为唯一用户的标识（区分不同用户）
+//    @RequestParam("question")
     @PostMapping("/sendQuestion")
-    public Result question(@RequestParam("id") Long id, @RequestParam("question") String question,@RequestParam("pId") Integer pId) throws InterruptedException {
+    public Result question( Long id,  String question, Integer pId) throws InterruptedException {
         if (StrUtil.isBlank(question)) {
             List<String> sug = new ArrayList<>();
             sug.add("代码为空");

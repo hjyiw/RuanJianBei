@@ -49,7 +49,7 @@ public class ProblemServiceImpl implements ProblemService {
                 Problem problem = iterator.next();
                 boolean flag = false;
                 for (Label label : problem.getLabels()) {
-                    if (labels.contains(label.getLId().toString())) {
+                    if (labels.contains(label.getLName())) {
                         flag = true;
                         break;
                     }
