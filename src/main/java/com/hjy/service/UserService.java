@@ -1,6 +1,11 @@
 package com.hjy.service;
 
 import com.hjy.pojo.User;
+import com.hjy.pojo.conditions;
+import com.hjy.pojo.errors;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * ClassName: UserService
@@ -27,4 +32,12 @@ public interface UserService {
 
     //修改密码
     void updatePwd(String newPwd);
+
+    List<User> findStudentsByClassId(Long classId);
+
+    List<User> searchStudents(String username, Integer id, Long cid);
+
+    conditions findCondition(Long id);
+
+    errors findErrors(Long id);
 }

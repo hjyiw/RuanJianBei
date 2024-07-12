@@ -31,4 +31,9 @@ public class User {
     private String email; //邮箱
     private LocalDateTime createTime; //创建时间
     private LocalDateTime updateTime; //更新时间
+    private Integer acNum; //做题数
+    private String role; //角色
+    private Integer cId; //班级号
+    private String cName; //班级名称
+
 }

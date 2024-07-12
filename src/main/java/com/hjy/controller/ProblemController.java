@@ -60,6 +60,7 @@ public class ProblemController {
     @GetMapping("/findByid/{pId}")
     public Result findById(@PathVariable Integer pId){
         Problem problem = problemService.findById(pId);
+        System.out.println(problem);
         return Result.success(problem);
     }
 
@@ -69,7 +70,6 @@ public class ProblemController {
         return Result.success(data);
     }
     // 使用 id 作为唯一用户的标识（区分不同用户）
-//    @RequestParam("question")
     @PostMapping("/sendQuestion")
     public Result question( Long id,  String question, Integer pId) throws InterruptedException {
         if (StrUtil.isBlank(question)) {

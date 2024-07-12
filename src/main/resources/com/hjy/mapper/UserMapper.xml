@@ -6,4 +6,16 @@
     <select id="findById" resultType="com.hjy.pojo.User">
         select * from user where id = #{id}
     </select>
+    <select id="searchStudents" resultType="com.hjy.pojo.User">
+        select * from user
+        <where>
+                c_id = #{cid} and role != 'teacher'
+                <if test="username != null and username != ''">
+                     and username like concat('%', #{username}, '%')
+                </if>
+                <if test="id != null">
+                        AND id = #{id}
+                </if>
+        </where>
+    </select>
 </mapper>

@@ -2,6 +2,8 @@ package com.hjy.service.Impl;
 
 import com.hjy.mapper.UserMapper;
 import com.hjy.pojo.User;
+import com.hjy.pojo.conditions;
+import com.hjy.pojo.errors;
 import com.hjy.service.UserService;
 import com.hjy.utils.Md5Util;
 import com.hjy.utils.ThreadLocalUtil;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,5 +64,33 @@ public class UserServiceImpl implements UserService {
         Map<String,Object> map = ThreadLocalUtil.get();
         Integer id = (Integer) map.get("id");
         userMapper.updatePwd(Md5Util.getMD5String(newPwd),id);
+    }
+
+    @Override
+    public List<User> findStudentsByClassId(Long classId) {
+        List<User> users = userMapper.findStudentsByClassId(classId);
+        for (User user : users) {
+            user.getNickname();
+        }
+        return users;
+    }
+
+    @Override
+    public List<User> searchStudents(String username, Integer id, Long cid) {
+        List<User> users = userMapper.searchStudents(username,id, cid);
+        for (User user : users) {
+            System.out.println(user.getNickname());
+        }
+        return users;
+    }
+
+    @Override
+    public conditions findCondition(Long id) {
+        return userMapper.findCondition(id);
+    }
+
+    @Override
+    public errors findErrors(Long id) {
+        return userMapper.findErrors(id);
     }
 }

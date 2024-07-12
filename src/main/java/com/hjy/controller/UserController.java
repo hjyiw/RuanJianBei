@@ -2,6 +2,8 @@ package com.hjy.controller;
 
 import com.hjy.pojo.Result;
 import com.hjy.pojo.User;
+import com.hjy.pojo.conditions;
+import com.hjy.pojo.errors;
 import com.hjy.service.UserService;
 import com.hjy.utils.JwtUtil;
 import com.hjy.utils.Md5Util;
@@ -14,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 @Validated
 @RestController
@@ -57,7 +60,7 @@ public class UserController {
         if (u.getPassword().equals(password)) {
             Map<String, Object> claims = new HashMap<>();
             claims.put("id", u.getId());
-            claims.put("username", u.getUsername());
+            claims.put("username", u.getNickname());
             String token = JwtUtil.genToken(claims);
             return Result.success(token);
         } else {
@@ -74,6 +77,7 @@ public class UserController {
         Map<String,Object> map = ThreadLocalUtil.get();
         String name = (String) map.get("username");
         User u = userService.findByUserName(name);
+        System.out.println(u);
         return Result.success(u);
 
     }
@@ -103,6 +107,11 @@ public class UserController {
         return Result.success();
     }
 
+    /**
+     * 修改密码
+     * @param params
+     * @return
+     */
     @PatchMapping("/updatePwd")
     public Result updatePwd(@RequestBody Map<String,String> params){
         //校验参数
@@ -130,10 +139,44 @@ public class UserController {
 
     }
 
-//    @GetMapping("/userinfo")
-//    public Result user_info(Integer id){
-//        User user = userService.findById(id);
-//        System.out.println(user);
-//        return Result.success(user);
-//    }
+    /**
+     * 查询学生列表
+     * @param classId
+     * @return
+     */
+    @GetMapping("/stuList")
+    public Result queryStudentByClassId(@RequestParam("classId") Long classId) {
+        // 调用服务层的方法，根据班级ID获取学生列表
+        List<User> students =  userService.findStudentsByClassId(classId);
+        return Result.success(students);
+    }
+
+    /**
+     * 搜索学生
+     * @param username
+     * @param id
+     * @param cid
+     * @return
+     */
+    @PostMapping("/searchStu")
+    public Result searchStudent( @RequestParam(value = "username", required = false) String username,
+                                 @RequestParam(value = "id", required = false) Integer id,
+                                 @RequestParam(value = "cid", required = true) Long cid) {
+        // 调用服务层的方法，根据传入的参数搜索学生
+        List<User> students =  userService.searchStudents(username, id, cid);
+        return Result.success(students);
+    }
+
+    @GetMapping("/condition")
+    public Result queryCondition(@RequestParam("id") Long id) {
+        System.out.println(id);
+        conditions con = userService.findCondition(id);
+        return Result.success(con);
+    }
+
+    @GetMapping("/errors")
+    public Result queryErrors(@RequestParam("id") Long id) {
+        errors err = userService.findErrors(id);
+        return Result.success(err);
+    }
 }

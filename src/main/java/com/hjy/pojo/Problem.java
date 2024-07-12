@@ -24,7 +24,7 @@ public class Problem {
     private Integer state; //状态
     private String difficulty; // 难度
     private Integer acNum; //通过数
-    private String content; //内容
+    private String proCon; //内容
     private List<Label> labels; //标签
     private String inDetail; //输入描述
     private String outDetail; //输出描述
