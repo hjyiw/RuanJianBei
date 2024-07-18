@@ -39,11 +39,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void register(String username, String password) {
-        //加密
-//        String md5String = Md5Util.getMD5String(password);
-        //添加
-        userMapper.register(username,password);
+    public void register(String username, String password, String role) {
+        userMapper.register(username,password,role);
     }
 
     @Override
@@ -63,7 +60,7 @@ public class UserServiceImpl implements UserService {
     public void updatePwd(String newPwd) {
         Map<String,Object> map = ThreadLocalUtil.get();
         Integer id = (Integer) map.get("id");
-        userMapper.updatePwd(Md5Util.getMD5String(newPwd),id);
+        userMapper.updatePwd(newPwd,id);
     }
 
     @Override

@@ -16,22 +16,20 @@ import java.util.Map;
 public interface UserMapper {
     User findById(Integer id);
     //根据用户名查询用户
-//    @Select("select * from user where nickname = #{nickname}")
     @Select("select username, id, password, " +
             "phone, nickname, signature, " +
             "picture, create_time, update_time," +
-            " email, role, ac_num, class.c_id, c_name " +
-            "from user join class on user.c_id = class.c_id" +
-            "  where nickname = #{nickname}")
+            " email, role, ac_num, c_id " +
+            "from user" +
+            "  where username = #{username}")
     User findByUserName(String username);
 
     //注册
-    @Insert("insert into user(username,password,create_time,update_time)" +
-            " values(#{username},#{password},now(),now())")
-    void register(String username, String password);
+    @Insert("insert into user(username,password,role,create_time,update_time)" +
+            " values (#{username},#{password},#{role} ,now(),now())")
+    void register(String username, String password,String role);
 
     //更新用户信息
-    @Update("update user set nickname = #{nickname}, phone = #{phone}, update_time = #{updateTime}, signature = #{signature} where id = #{id}")
     void update(User user);
 
     //更新头像

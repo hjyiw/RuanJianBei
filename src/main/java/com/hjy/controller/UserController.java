@@ -32,12 +32,12 @@ public class UserController {
      * @return
      */
     @PostMapping("/register")
-    public Result register(@Pattern(regexp = "^\\S{5,16}$") String username, @Pattern(regexp = "^\\S{5,16}$") String password) {
+    public Result register(@Pattern(regexp = "^\\S{5,16}$") String username, @Pattern(regexp = "^\\S{5,16}$") String password,String role) {
         //查询用户
         User u = userService.findByUserName(username);
         if (u == null) {
             //注册
-            userService.register(username, password);
+            userService.register(username, password,role);
             return Result.success();
         } else {
             //占用
@@ -60,7 +60,7 @@ public class UserController {
         if (u.getPassword().equals(password)) {
             Map<String, Object> claims = new HashMap<>();
             claims.put("id", u.getId());
-            claims.put("username", u.getNickname());
+            claims.put("username", u.getUsername());
             String token = JwtUtil.genToken(claims);
             return Result.success(token);
         } else {
@@ -77,7 +77,6 @@ public class UserController {
         Map<String,Object> map = ThreadLocalUtil.get();
         String name = (String) map.get("username");
         User u = userService.findByUserName(name);
-        System.out.println(u);
         return Result.success(u);
 
     }
@@ -91,6 +90,9 @@ public class UserController {
     //将请求参数封装成一个对象
     //添加validated注解使在实体类中的参数校验生效
     public Result update(@RequestBody @Validated User user){
+        Map<String,Object> map = ThreadLocalUtil.get();
+        Integer id = (Integer) map.get("id");
+        user.setId(id);
         userService.update(user);
         return Result.success();
     }
@@ -113,11 +115,10 @@ public class UserController {
      * @return
      */
     @PatchMapping("/updatePwd")
-    public Result updatePwd(@RequestBody Map<String,String> params){
+    public Result updatePwd(@RequestParam("currentPassword") String old_pwd
+    , @RequestParam("newPassword") String new_pwd,
+                            @RequestParam("confirmPassword") String re_pwd){
         //校验参数
-        String old_pwd = params.get("old_pwd");
-        String new_pwd = params.get("new_pwd");
-        String re_pwd = params.get("re_pwd");
         if(!StringUtils.hasLength(old_pwd)
                 || !StringUtils.hasLength(new_pwd)
                 || !StringUtils.hasLength(re_pwd)){
@@ -126,7 +127,7 @@ public class UserController {
         Map<String,Object> map = ThreadLocalUtil.get();
         String name = (String) map.get("username");
         User loginUser = userService.findByUserName(name);
-        if(!loginUser.getPassword().equals(Md5Util.getMD5String(old_pwd))){
+        if(!loginUser.getPassword().equals(old_pwd)){
             return Result.error("原密码错误");
         }
         if(!new_pwd.equals(re_pwd)){

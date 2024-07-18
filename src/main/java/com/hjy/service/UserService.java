@@ -22,7 +22,7 @@ public interface UserService {
     User findByUserName(String username);
 
     //注册
-    void register(String username, String password);
+    void register(String username, String password, String role);
 
     //更新用户信息
     void update(User user);

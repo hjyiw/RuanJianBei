@@ -3,6 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hjy.mapper.ProblemMapper">
+    <update id="updateState">
+        update problems set state = #{state} where p_id = #{pId}
+    </update>
     <select id="findAll" resultType="com.hjy.pojo.Problem">
         select distinct * from problems
     </select>

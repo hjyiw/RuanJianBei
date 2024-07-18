@@ -71,6 +71,12 @@ public class ProblemServiceImpl implements ProblemService {
     public String findContent(Integer pId){
         return problemMapper.findContent(pId);
     }
+
+    @Override
+    public void updateState(Integer pId, Integer state) {
+        problemMapper.updateState(pId, state);
+    }
+
     @Override
     public List<TestData> findData(Integer pId) {
         return problemMapper.findData(pId);
@@ -86,7 +92,12 @@ public class ProblemServiceImpl implements ProblemService {
             question += "sample" + cnt + ": " + data.toString() + "\n";
             cnt ++;
         }
-        question += "解析这段代码，你必须只能给我一个由{}括起来的json格式的对象，属性有result和sug,如果代码通过所有数据集result就为1否则为0,sug是一个数组存你对代码进行语法错误和规范检查后的建议,如果测试集没通过也要在sug里给出错误在哪";
+        question += "解析这段代码，你的回答必须只能是一个由{}括起来的json格式的字符串，我要" +
+                "用用string类型的变量接收并解析你的回答，属性有result，sug和sou," +
+                "如果代码通过所有数据集result就为1否则为0," +
+                "sug是一个数组存你对代码进行语法错误和规范检查后的建议," +
+                "sou是一个数组存你根据代码问题推送的一些学习视频b站链接，一定要网站地址，" +
+                "如果测试集没通过也要在sug里给出错误在哪";
         return question;
     }
 }

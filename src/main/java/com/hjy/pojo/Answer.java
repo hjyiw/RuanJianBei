@@ -20,4 +20,5 @@ import java.util.List;
 public class Answer {
     Integer result; //运行结果
     List<String> sug; //建议
+    List<String> sou; //资源推荐
 }

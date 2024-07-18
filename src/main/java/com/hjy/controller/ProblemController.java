@@ -69,13 +69,19 @@ public class ProblemController {
         List<TestData> data = problemService.findData(pId);
         return Result.success(data);
     }
+
+    @PostMapping("/update")
+    public Result updateState(Integer pId, Integer state) {
+        problemService.updateState(pId, state);
+        return Result.success();
+    }
     // 使用 id 作为唯一用户的标识（区分不同用户）
     @PostMapping("/sendQuestion")
     public Result question( Long id,  String question, Integer pId) throws InterruptedException {
-        if (StrUtil.isBlank(question)) {
+        if (StrUtil.isBlank(question) || question.equals("undefined")) {
             List<String> sug = new ArrayList<>();
             sug.add("代码为空");
-            Answer answer = new Answer(0,sug);
+            Answer answer = new Answer(0,sug,null);
             return Result.success(answer);
         }
         // 尝试锁定用户
@@ -123,6 +129,8 @@ public class ProblemController {
             // 将记录添加到 memoryUserRecordSpace
             String answer = listener.getAnswer().toString();
             memoryUserRecordSpace.storeInteractMsg(id, new InteractMsg(MsgDTO.createUserMsg(question), MsgDTO.createAssistantMsg(answer)));
+            answer = answer.replaceAll("^```json\\n", "").replaceAll("\\n```$", "");
+            System.out.println(answer);
             Answer lastAnswer = JSON.parseObject(answer, Answer.class);
             System.out.println(lastAnswer);
             return Result.success(lastAnswer);

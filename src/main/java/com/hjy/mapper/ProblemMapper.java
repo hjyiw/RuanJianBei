@@ -20,4 +20,6 @@ public interface ProblemMapper {
     List<TestData> findData(Integer pId);
 
     String findContent(Integer pId);
+
+    void updateState(Integer pId, Integer state);
 }
